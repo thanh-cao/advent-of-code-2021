@@ -56,25 +56,6 @@
         }
 
 
-        const position = {
-            horizontal: 0,
-            aim: 0,
-            depth: 0,
-
-            down: step => {
-                this.aim += step;
-            },
-
-            up: step => {
-                this.aim -= step;
-            },
-
-            forward: step => {
-                this.horizontal += step;
-                this.depth += this.aim * step;
-            }
-        };
-
         // Day 2b
         function solution2(input) {
             const position = {

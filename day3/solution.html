@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code 2021</title>
+</head>
+
+<body>
+    <h1>Day 3</h1>
+    <input type="file" accept="text/plain">
+    <div>Answer part 1: <span id="result1"></span></div>
+    <div>Answer part 2: <span id="result2"></span></div>
+
+    <script>
+        let input = document.querySelector("input[type=file]")
+            .addEventListener('change', (e) => e.target.files[0].text()
+                .then(text => run(text.split(/\r?\n/))));
+
+        // let input = fetch('test-day3.txt')
+        //     .then(response => response.text())
+        //     .then(text => run(text.split(/\r?\n/)));
+
+        function run(input) {
+            document.getElementById("result1").innerText = solution1(input);
+            // document.getElementById("result2").innerText = solution2(input);
+        }
+
+
+        // Day 2a
+        function reformatData(input) {
+            return input.map(line => line).map(digit => digit.split(''));
+        }
+
+        function solution1(input) {
+            input = reformatData(input);
+
+            let gamma = '';
+            let epsilon = '';
+
+            for (let col = 0; col < 12; col++) {
+                let count0 = 0;
+                let count1 = 0;
+
+                for (let row = 0; row < input.length; row++) {
+                    if (input[row][col] === '0') {
+                        count0++;
+                    } else {
+                        count1++;
+                    }
+                }
+
+                if (count0 > count1) {
+                    gamma += '0';
+                    epsilon += '1';
+                } else {
+                    gamma += '1';
+                    epsilon += '0';
+                }
+            }
+
+            return parseInt(gamma, 2) * parseInt(epsilon, 2);
+        }
+
+
+        // Day 2b
+        function solution2(input) {
+
+        };
+    </script>
+</body>
+
+</html>
