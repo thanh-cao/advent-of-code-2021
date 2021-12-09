@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code 2021</title>
+</head>
+
+<body>
+    <h1>Day 1</h1>
+    <input type="file" accept="text/plain">
+    <div>Answer part 1: <span id="result1"></span></div>
+    <div>Answer part 2: <span id="result2"></span></div>
+
+    <script>
+        let input = document.querySelector("input[type=file]")
+            .addEventListener('change', (e) => e.target.files[0].text()
+                .then(text => run(text.split(/\r?\n/))));
+
+
+        function run(input) {
+            document.getElementById("result1").innerText = solution1(input);
+            document.getElementById("result2").innerText = solution2(input);
+        }
+
+
+        // Day 1b
+        function solution2(input) {
+            let count = 0;
+            input = input.map(stringNumber => parseInt(stringNumber));
+
+            input.forEach((number, index) => {
+                let sum1 = number + input[index + 1] + input[index + 2];
+                let sum2 = input[index + 1] + input[index + 2] + input[index + 3];
+                (sum1 < sum2) ? count++ : count;
+            });
+            return count;
+        }
+
+        // Day 1a reduce()
+        // function solution(input) {
+        //     return input.reduce(
+        //         (total, currVal, currIndex) => {
+        //             if (parseInt(input[currIndex + 1]) > parseInt(currVal)) {
+        //                 total = total + 1;
+        //             }
+        //             return total;
+        //         },0);
+        // }
+
+        // Day 1a
+        function solution1(input) {
+            let count = 0;
+            input.forEach((element, index) => {
+                if (parseInt(element) > parseInt(input[index - 1])) {
+                    count += 1;
+                }
+            })
+            return count;
+        };
+
+        
+    </script>
+</body>
+
+</html>
