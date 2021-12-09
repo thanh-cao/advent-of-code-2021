@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code 2021</title>
+</head>
+
+<body>
+    <h1>Day 2</h1>
+    <input type="file" accept="text/plain">
+    <div>Answer part 1: <span id="result1"></span></div>
+    <div>Answer part 2: <span id="result2"></span></div>
+
+    <script>
+        let input = document.querySelector("input[type=file]")
+            .addEventListener('change', (e) => e.target.files[0].text()
+                .then(text => run(text.split(/\r?\n/))));
+
+        // let input = fetch('test-day2.txt')
+        //     .then(response => response.text())
+        //     .then(text => run(text.split(/\r?\n/)));
+
+        function run(input) {
+            document.getElementById("result1").innerText = solution1(input);
+            document.getElementById("result2").innerText = solution2(input);
+        }
+
+
+        // Day 2a
+        function solution1(input) {
+            const position = {
+                forward: 0,
+                up: 0,
+                down: 0
+            };
+
+            input = input.reduce((output, instruction) => {
+                let splitted = instruction.split(' ');
+
+                if (!output[splitted[0]]) {
+                    output[splitted[0]] = [];
+                }
+                output[splitted[0]].push(parseInt(splitted[1]));
+                return output;
+            }, {});
+
+            Object.keys(input).forEach(key => {
+                input[key].forEach(value => {
+                    position[key] += value;
+                });
+            });
+            return ((position.down - position.up) * position.forward);
+        }
+
+
+        const position = {
+            horizontal: 0,
+            aim: 0,
+            depth: 0,
+
+            down: step => {
+                this.aim += step;
+            },
+
+            up: step => {
+                this.aim -= step;
+            },
+
+            forward: step => {
+                this.horizontal += step;
+                this.depth += this.aim * step;
+            }
+        };
+
+        // Day 2b
+        function solution2(input) {
+            const position = {
+                horizontal: 0,
+                aim: 0,
+                depth: 0,
+
+                down: function (step) {
+                    this.aim += step;
+                },
+
+                up: function (step) {
+                    this.aim -= step;
+                },
+
+                forward: function (step) {
+                    this.horizontal += step;
+                    this.depth += this.aim * step;
+                }
+            };
+
+            input = input.map(instruction => {
+                let output = [];
+                let splitted = instruction.split(' ');
+
+                output.push([splitted[0], parseInt(splitted[1])]);
+                return output;
+            });
+
+            for (let instruction of input) {
+                position[instruction[0][0]](parseInt(instruction[0][1]))
+            }
+            return position.horizontal * position.depth;
+        };
+
+    </script>
+</body>
+
+</html>
