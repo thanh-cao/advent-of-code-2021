@@ -25,7 +25,7 @@
 
         function run(input) {
             document.getElementById("result1").innerText = solution1(input);
-            // document.getElementById("result2").innerText = solution2(input);
+            document.getElementById("result2").innerText = solution2(input);
         }
 
 
@@ -66,9 +66,53 @@
 
 
         // Day 2b
-        function solution2(input) {
 
+        function getRating(input, type) {
+            input = reformatData(input);
+
+            let typeOfGas = [...input];
+
+            for (let col = 0; col < 12; col++) {
+                let count0 = 0;
+                let count1 = 0;
+
+                for (let row = 0; row < typeOfGas.length; row++) {
+                    if (typeOfGas.length === 1) return typeOfGas;
+
+                    if (typeOfGas[row][col] === '0') {
+                        count0++;
+                    } else {
+                        count1++;
+                    }
+                }
+
+                if (type === 'oxygen') {
+                    if (count0 > count1) {
+                        typeOfGas = typeOfGas.filter(row => row[col] === '0');
+                    } else if (count0 < count1) {
+                        typeOfGas = typeOfGas.filter(row => row[col] === '1');
+                    } else {
+                        typeOfGas = typeOfGas.filter(row => row[col] === '1');
+                    }
+                } else if (type === 'co2') {
+                    if (count0 > count1) {
+                        typeOfGas = typeOfGas.filter(row => row[col] === '1');
+                    } else if (count0 < count1) {
+                        typeOfGas = typeOfGas.filter(row => row[col] === '0');
+                    } else {
+                        typeOfGas = typeOfGas.filter(row => row[col] === '0');
+                    }
+                }
+            }
+            return typeOfGas;
         };
+
+        function solution2(input) {
+            let oxygen = getRating(input, 'oxygen')[0].join('');
+            let co2 = getRating(input, 'co2')[0].join('');
+
+            return parseInt(oxygen, 2) * parseInt(co2, 2);
+        }
     </script>
 </body>
 
