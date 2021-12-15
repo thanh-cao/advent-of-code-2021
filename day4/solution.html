@@ -15,13 +15,13 @@
     <div>Answer part 2: <span id="result2"></span></div>
 
     <script>
-        // let input = document.querySelector("input[type=file]")
-        //     .addEventListener('change', (e) => e.target.files[0].text()
-        //         .then(text => run(text.split(/\r?\n/))));
+        let input = document.querySelector("input[type=file]")
+            .addEventListener('change', (e) => e.target.files[0].text()
+                .then(text => run(text.split(/\r?\n/))));
 
-        let input = fetch('test-day4.txt')
-            .then(response => response.text())
-            .then(text => run(text.split(/\r?\n/)));
+        // let input = fetch('test-day4.txt')
+        //     .then(response => response.text())
+        //     .then(text => run(text.split(/\r?\n/)));
 
         function run(input) {
             document.getElementById("result1").innerText = solution1(input);
@@ -40,46 +40,36 @@
             }
 
             markNumber(number) {
-                this.board.forEach((row, rowIndex) => {
-                    row.forEach((cell, cellIndex) => {
-                        if (cell === number) {
-                            this.board[rowIndex][cellIndex] = 'x';
-                        }
+                if (!this.win) {
+                    this.board.forEach((row, rowIndex) => {
+                        row.forEach((cell, cellIndex) => {
+                            if (cell === number) {
+                                this.board[rowIndex][cellIndex] = 'x';
+                            }
+                        });
                     });
-                });
+                }
             }
 
             checkWin() {
                 for (let i = 0; i < this.board.length; i++) {
                     let row = this.board[i];
                     let column = [];
-                    let diagonal = [];
-                    let diagonal2 = [];
 
                     for (let j = 0; j < row.length; j++) {
                         column.push(this.board[j][i]);
-                        diagonal.push(this.board[j][j]);
-                        diagonal2.push(this.board[j][row.length - 1 - j]);
                     }
 
                     if (row.every(number => number === 'x')) {
-                        this.win = true;
+                        return this.win = true;
                     }
 
                     if (column.every(number => number === 'x')) {
-                        this.win = true;
-                    }
-
-                    if (diagonal.every(number => number === 'x')) {
-                        this.win = true;
-                    }
-
-                    if (diagonal2.every(number => number === 'x')) {
-                        this.win = true;
+                        return this.win = true;
                     }
                 }
 
-                return this.win;
+                return this.win = false;
             }
 
             sumUnmarkedNumbers() {
@@ -132,7 +122,9 @@
             for (let number of callingNumbers) {
                 for (let board of boards) {
                     board.markNumber(number);
-                    if (board.checkWin()) {
+                    board.checkWin();
+
+                    if (board.win) {
                         return parseInt(number) * board.sumUnmarkedNumbers();
                     }
                 }
@@ -143,7 +135,29 @@
 
         // Part two
         function solution2(input) {
-            return "Part two not implemented";
+            let {
+                boards,
+                callingNumbers
+            } = reformatData(input);
+
+            let winningBoards = [];
+            let lastWin;
+
+            for (let number of callingNumbers) {
+                for (let board of boards) {
+                    board.markNumber(number);
+                    board.checkWin();
+
+                    if (board.win && winningBoards.indexOf(board) === -1) {
+                        winningBoards.push(board);
+                    }
+
+                    if (winningBoards.length === boards.length) {
+                        return parseInt(number) * winningBoards[winningBoards.length - 1].sumUnmarkedNumbers();
+                    }
+                }
+            }
+            return;
         }
     </script>
 </body>
