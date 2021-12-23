@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent of Code 2021</title>
+</head>
+
+<body>
+    <h1>Day 5</h1>
+    <input type="file" accept="text/plain">
+    <div>Answer part 1: <span id="result1"></span></div>
+    <div>Answer part 2: <span id="result2"></span></div>
+
+    <script>
+        let input2 = document.querySelector("input[type=file]")
+            .addEventListener('change', (e) => e.target.files[0].text()
+                .then(text => run(text.split(/\r?\n/))));
+
+        let input = fetch('test-day5.txt')
+            .then(response => response.text())
+            .then(text => run(text.split(/\r?\n/)));
+
+        function run(input) {
+            document.getElementById("result1").innerText = solution1(input);
+            document.getElementById("result2").innerText = solution2(input);
+        }
+
+        function sortData(coordinate) {
+            if (coordinate.startX === coordinate.endX) {
+                if (coordinate.startY > coordinate.endY) {
+                    let temp = coordinate.endY;
+                    coordinate.endY = coordinate.startY;
+                    coordinate.startY = temp;
+
+                    return coordinate;
+                }
+            }
+
+            if (coordinate.startY === coordinate.endY) {
+                if (coordinate.startX > coordinate.endX) {
+                    let temp = coordinate.endX;
+                    coordinate.endX = coordinate.startX;
+                    coordinate.startX = temp;
+
+                    return coordinate;
+                }
+            }
+
+            return coordinate;
+        }
+
+        function reformatData(input) {
+            let vertical = [];
+            let horizontal = [];
+
+            for (let line of input) {
+                let start = line.split(' -> ')[0];
+                let startX = parseInt(start.split(',')[0]);
+                let startY = parseInt(start.split(',')[1]);
+
+                let end = line.split(' -> ')[1];
+                let endX = parseInt(end.split(',')[0]);
+                let endY = parseInt(end.split(',')[1]);
+
+                let coord = {
+                    startX,
+                    startY,
+                    endX,
+                    endY
+                };
+
+                coord = sortData(coord);
+
+                if (coord.startX === coord.endX) {
+                    vertical.push(coord);
+                }
+
+                if (coord.startY === coord.endY) {
+                    horizontal.push(coord);
+                }
+
+            }
+
+            return {
+                vertical,
+                horizontal
+            };
+        }
+
+
+        function createGrid(max) {
+            let grid = [];
+
+            for (let row = 0; row < max; row ++) {
+                grid[row] = [];
+                for (let cell = 0; cell < max; cell++) {
+                    grid[row][cell] = 0;
+                }
+            }
+            return grid;
+        }
+
+        // Part one
+        function solution1(input) {
+            let coordinates = reformatData(input);
+            let grid = createGrid(1000);
+            let count = 0;
+
+            coordinates.vertical.forEach(coord => {
+                for (let y = coord.startY; y <= coord.endY; y++) {
+                    grid[y][coord.startX]++;
+                }
+            })
+
+            coordinates.horizontal.forEach(coord => {
+                for (let x = coord.startX; x <= coord.endX; x++) {
+                    grid[coord.startY][x]++;
+                }
+            })
+
+            for (let row of grid) {
+                for (let cell of row) {
+                    if (cell >= 2) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+
+        // Part two
+        function solution2(input) {
+
+            return "Part two not implemented";
+        }
+    </script>
+</body>
+
+</html>
