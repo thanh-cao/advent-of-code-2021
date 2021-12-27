@@ -15,16 +15,16 @@
     <div>Answer part 2: <span id="result2"></span></div>
 
     <script>
-        let input2 = document.querySelector("input[type=file]")
+        let input = document.querySelector("input[type=file]")
             .addEventListener('change', (e) => e.target.files[0].text()
                 .then(text => run(text.split(/\r?\n/))));
 
-        let input = fetch('test-day5.txt')
-            .then(response => response.text())
-            .then(text => run(text.split(/\r?\n/)));
+        // let input = fetch('test-day5.txt')
+        //     .then(response => response.text())
+        //     .then(text => run(text.split(/\r?\n/)));
 
         function run(input) {
-            document.getElementById("result1").innerText = solution1(input);
+            document.getElementById("result1").innerText = solution1(input).count;
             document.getElementById("result2").innerText = solution2(input);
         }
 
@@ -55,6 +55,7 @@
         function reformatData(input) {
             let vertical = [];
             let horizontal = [];
+            let diagonal = [];
 
             for (let line of input) {
                 let start = line.split(' -> ')[0];
@@ -76,17 +77,17 @@
 
                 if (coord.startX === coord.endX) {
                     vertical.push(coord);
-                }
-
-                if (coord.startY === coord.endY) {
+                } else if (coord.startY === coord.endY) {
                     horizontal.push(coord);
+                } else {
+                    diagonal.push(coord);
                 }
-
             }
 
             return {
                 vertical,
-                horizontal
+                horizontal,
+                diagonal
             };
         }
 
@@ -94,7 +95,7 @@
         function createGrid(max) {
             let grid = [];
 
-            for (let row = 0; row < max; row ++) {
+            for (let row = 0; row < max; row++) {
                 grid[row] = [];
                 for (let cell = 0; cell < max; cell++) {
                     grid[row][cell] = 0;
@@ -128,14 +129,41 @@
                     }
                 }
             }
-            return count;
+            return {
+                grid,
+                count
+            };
         }
 
 
         // Part two
         function solution2(input) {
+            let coordinates = reformatData(input).diagonal;
+            let grid = solution1(input).grid;
+            let count = 0;
 
-            return "Part two not implemented";
+            coordinates.forEach(coord => {
+                let incrementCol = coord.startX > coord.endX ? -1 : 1;
+                let incrementRow = coord.startY > coord.endY ? -1 : 1;
+
+                grid[coord.startY][coord.startX]++;
+
+                while (coord.startX !== coord.endX) {
+                    coord.startY += incrementRow;
+                    coord.startX += incrementCol;
+                    grid[coord.startY][coord.startX]++
+                }
+            })
+
+            for (let row of grid) {
+                for (let cell of row) {
+                    if (cell >= 2) {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
         }
     </script>
 </body>
